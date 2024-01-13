@@ -3,6 +3,7 @@
 package ent
 
 import (
+	"time"
 	"white-page/ent/entry"
 	"white-page/ent/schema"
 )
@@ -21,8 +22,8 @@ func init() {
 	entryDescSurname := entryFields[1].Descriptor()
 	// entry.DefaultSurname holds the default value on creation for the surname field.
 	entry.DefaultSurname = entryDescSurname.Default.(string)
-	// entryDescTel is the schema descriptor for tel field.
-	entryDescTel := entryFields[2].Descriptor()
-	// entry.DefaultTel holds the default value on creation for the tel field.
-	entry.DefaultTel = entryDescTel.Default.(string)
+	// entryDescCreatedAt is the schema descriptor for created_at field.
+	entryDescCreatedAt := entryFields[3].Descriptor()
+	// entry.DefaultCreatedAt holds the default value on creation for the created_at field.
+	entry.DefaultCreatedAt = entryDescCreatedAt.Default.(func() time.Time)
 }

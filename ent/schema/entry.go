@@ -3,6 +3,7 @@ package schema
 import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"time"
 )
 
 // Entry holds the schema definition for the Entry entity.
@@ -12,9 +13,10 @@ import (
 type Entry struct {
 	ent.Schema
 
-	Name    string
-	Surname string
-	Tel     string
+	Name     string
+	Surname  string
+	Tel      string
+	CreateAt time.Time
 }
 
 // Fields of the Entry.
@@ -22,7 +24,8 @@ func (Entry) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").Default("unknown"),
 		field.String("surname").Default("unknown"),
-		field.String("tel").Default("unknown"),
+		field.String("tel").Unique(),
+		field.Time("created_at").Default(time.Now),
 	}
 }
 

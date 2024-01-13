@@ -13,7 +13,8 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString, Default: "unknown"},
 		{Name: "surname", Type: field.TypeString, Default: "unknown"},
-		{Name: "tel", Type: field.TypeString, Default: "unknown"},
+		{Name: "tel", Type: field.TypeString, Unique: true},
+		{Name: "created_at", Type: field.TypeTime},
 	}
 	// EntriesTable holds the schema information for the "entries" table.
 	EntriesTable = &schema.Table{

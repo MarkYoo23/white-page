@@ -1,10 +1,25 @@
 package main
 
 import (
+	"bufio"
+	"os"
+	"strings"
+	"white-page/cmd/exec"
 	"white-page/internal/db"
 	"white-page/internal/di"
-	"white-page/internal/entries"
 )
+
+var execMap map[string]exec.Exec
+
+func init() {
+	execMap = make(map[string]exec.Exec)
+	execMap["search"] = exec.NewSearchExec()
+	execMap["list"] = exec.NewListExec()
+	execMap["insert"] = exec.NewInsertExec()
+	execMap["delete"] = exec.NewDeleteExec()
+	execMap["export"] = exec.NewExportExec()
+	execMap["map"] = exec.NewMapExec()
+}
 
 func main() {
 	err := di.Initialize()
@@ -27,17 +42,19 @@ func main() {
 		panic(err)
 	}
 
-	entryService, err := di.GetService[entries.EntryService]()
-	if err != nil {
-		panic(err)
-	}
+	reader := bufio.NewReader(os.Stdin)
 
-	entry, err := entryService.AddEntry("John", "Doe", "1234567890")
-	if err != nil {
-		return
-	}
+	for {
+		input, _ := reader.ReadString('\n')
+		splitValues := strings.Split(strings.Replace(input, "\r\n", "", -1), " ")
 
-	println(entry)
+		ex, ok := execMap[splitValues[0]]
+		if ok {
+			err = ex.Execute(splitValues[1:])
+		} else {
+			break
+		}
+	}
 
 	err = dbContext.Close()
 	if err != nil {

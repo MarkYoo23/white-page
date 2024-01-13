@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 	"white-page/ent/entry"
 	"white-page/ent/predicate"
 
@@ -69,6 +70,20 @@ func (eu *EntryUpdate) SetNillableTel(s *string) *EntryUpdate {
 	return eu
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (eu *EntryUpdate) SetCreatedAt(t time.Time) *EntryUpdate {
+	eu.mutation.SetCreatedAt(t)
+	return eu
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (eu *EntryUpdate) SetNillableCreatedAt(t *time.Time) *EntryUpdate {
+	if t != nil {
+		eu.SetCreatedAt(*t)
+	}
+	return eu
+}
+
 // Mutation returns the EntryMutation object of the builder.
 func (eu *EntryUpdate) Mutation() *EntryMutation {
 	return eu.mutation
@@ -118,6 +133,9 @@ func (eu *EntryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := eu.mutation.Tel(); ok {
 		_spec.SetField(entry.FieldTel, field.TypeString, value)
+	}
+	if value, ok := eu.mutation.CreatedAt(); ok {
+		_spec.SetField(entry.FieldCreatedAt, field.TypeTime, value)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, eu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -177,6 +195,20 @@ func (euo *EntryUpdateOne) SetTel(s string) *EntryUpdateOne {
 func (euo *EntryUpdateOne) SetNillableTel(s *string) *EntryUpdateOne {
 	if s != nil {
 		euo.SetTel(*s)
+	}
+	return euo
+}
+
+// SetCreatedAt sets the "created_at" field.
+func (euo *EntryUpdateOne) SetCreatedAt(t time.Time) *EntryUpdateOne {
+	euo.mutation.SetCreatedAt(t)
+	return euo
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (euo *EntryUpdateOne) SetNillableCreatedAt(t *time.Time) *EntryUpdateOne {
+	if t != nil {
+		euo.SetCreatedAt(*t)
 	}
 	return euo
 }
@@ -260,6 +292,9 @@ func (euo *EntryUpdateOne) sqlSave(ctx context.Context) (_node *Entry, err error
 	}
 	if value, ok := euo.mutation.Tel(); ok {
 		_spec.SetField(entry.FieldTel, field.TypeString, value)
+	}
+	if value, ok := euo.mutation.CreatedAt(); ok {
+		_spec.SetField(entry.FieldCreatedAt, field.TypeTime, value)
 	}
 	_node = &Entry{config: euo.config}
 	_spec.Assign = _node.assignValues

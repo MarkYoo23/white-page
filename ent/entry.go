@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 	"white-page/ent/entry"
 
 	"entgo.io/ent"
@@ -21,7 +22,9 @@ type Entry struct {
 	// Surname holds the value of the "surname" field.
 	Surname string `json:"surname,omitempty"`
 	// Tel holds the value of the "tel" field.
-	Tel          string `json:"tel,omitempty"`
+	Tel string `json:"tel,omitempty"`
+	// CreatedAt holds the value of the "created_at" field.
+	CreatedAt    time.Time `json:"created_at,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -34,6 +37,8 @@ func (*Entry) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case entry.FieldName, entry.FieldSurname, entry.FieldTel:
 			values[i] = new(sql.NullString)
+		case entry.FieldCreatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -72,6 +77,12 @@ func (e *Entry) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field tel", values[i])
 			} else if value.Valid {
 				e.Tel = value.String
+			}
+		case entry.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				e.CreatedAt = value.Time
 			}
 		default:
 			e.selectValues.Set(columns[i], values[i])
@@ -117,6 +128,9 @@ func (e *Entry) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("tel=")
 	builder.WriteString(e.Tel)
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(e.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 	"white-page/ent/entry"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -53,10 +54,16 @@ func (ec *EntryCreate) SetTel(s string) *EntryCreate {
 	return ec
 }
 
-// SetNillableTel sets the "tel" field if the given value is not nil.
-func (ec *EntryCreate) SetNillableTel(s *string) *EntryCreate {
-	if s != nil {
-		ec.SetTel(*s)
+// SetCreatedAt sets the "created_at" field.
+func (ec *EntryCreate) SetCreatedAt(t time.Time) *EntryCreate {
+	ec.mutation.SetCreatedAt(t)
+	return ec
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (ec *EntryCreate) SetNillableCreatedAt(t *time.Time) *EntryCreate {
+	if t != nil {
+		ec.SetCreatedAt(*t)
 	}
 	return ec
 }
@@ -104,9 +111,9 @@ func (ec *EntryCreate) defaults() {
 		v := entry.DefaultSurname
 		ec.mutation.SetSurname(v)
 	}
-	if _, ok := ec.mutation.Tel(); !ok {
-		v := entry.DefaultTel
-		ec.mutation.SetTel(v)
+	if _, ok := ec.mutation.CreatedAt(); !ok {
+		v := entry.DefaultCreatedAt()
+		ec.mutation.SetCreatedAt(v)
 	}
 }
 
@@ -120,6 +127,9 @@ func (ec *EntryCreate) check() error {
 	}
 	if _, ok := ec.mutation.Tel(); !ok {
 		return &ValidationError{Name: "tel", err: errors.New(`ent: missing required field "Entry.tel"`)}
+	}
+	if _, ok := ec.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "Entry.created_at"`)}
 	}
 	return nil
 }
@@ -158,6 +168,10 @@ func (ec *EntryCreate) createSpec() (*Entry, *sqlgraph.CreateSpec) {
 	if value, ok := ec.mutation.Tel(); ok {
 		_spec.SetField(entry.FieldTel, field.TypeString, value)
 		_node.Tel = value
+	}
+	if value, ok := ec.mutation.CreatedAt(); ok {
+		_spec.SetField(entry.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
 	}
 	return _node, _spec
 }

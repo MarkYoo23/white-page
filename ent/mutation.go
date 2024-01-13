@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"sync"
+	"time"
 	"white-page/ent/entry"
 	"white-page/ent/predicate"
 
@@ -35,6 +36,7 @@ type EntryMutation struct {
 	name          *string
 	surname       *string
 	tel           *string
+	created_at    *time.Time
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Entry, error)
@@ -247,6 +249,42 @@ func (m *EntryMutation) ResetTel() {
 	m.tel = nil
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (m *EntryMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *EntryMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the Entry entity.
+// If the Entry object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EntryMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *EntryMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
 // Where appends a list predicates to the EntryMutation builder.
 func (m *EntryMutation) Where(ps ...predicate.Entry) {
 	m.predicates = append(m.predicates, ps...)
@@ -281,7 +319,7 @@ func (m *EntryMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *EntryMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
 	if m.name != nil {
 		fields = append(fields, entry.FieldName)
 	}
@@ -290,6 +328,9 @@ func (m *EntryMutation) Fields() []string {
 	}
 	if m.tel != nil {
 		fields = append(fields, entry.FieldTel)
+	}
+	if m.created_at != nil {
+		fields = append(fields, entry.FieldCreatedAt)
 	}
 	return fields
 }
@@ -305,6 +346,8 @@ func (m *EntryMutation) Field(name string) (ent.Value, bool) {
 		return m.Surname()
 	case entry.FieldTel:
 		return m.Tel()
+	case entry.FieldCreatedAt:
+		return m.CreatedAt()
 	}
 	return nil, false
 }
@@ -320,6 +363,8 @@ func (m *EntryMutation) OldField(ctx context.Context, name string) (ent.Value, e
 		return m.OldSurname(ctx)
 	case entry.FieldTel:
 		return m.OldTel(ctx)
+	case entry.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown Entry field %s", name)
 }
@@ -349,6 +394,13 @@ func (m *EntryMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTel(v)
+		return nil
+	case entry.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Entry field %s", name)
@@ -407,6 +459,9 @@ func (m *EntryMutation) ResetField(name string) error {
 		return nil
 	case entry.FieldTel:
 		m.ResetTel()
+		return nil
+	case entry.FieldCreatedAt:
+		m.ResetCreatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown Entry field %s", name)

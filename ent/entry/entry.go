@@ -3,6 +3,8 @@
 package entry
 
 import (
+	"time"
+
 	"entgo.io/ent/dialect/sql"
 )
 
@@ -17,6 +19,8 @@ const (
 	FieldSurname = "surname"
 	// FieldTel holds the string denoting the tel field in the database.
 	FieldTel = "tel"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
 	// Table holds the table name of the entry in the database.
 	Table = "entries"
 )
@@ -27,6 +31,7 @@ var Columns = []string{
 	FieldName,
 	FieldSurname,
 	FieldTel,
+	FieldCreatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -44,8 +49,8 @@ var (
 	DefaultName string
 	// DefaultSurname holds the default value on creation for the "surname" field.
 	DefaultSurname string
-	// DefaultTel holds the default value on creation for the "tel" field.
-	DefaultTel string
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
 )
 
 // OrderOption defines the ordering options for the Entry queries.
@@ -69,4 +74,9 @@ func BySurname(opts ...sql.OrderTermOption) OrderOption {
 // ByTel orders the results by the tel field.
 func ByTel(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTel, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }
