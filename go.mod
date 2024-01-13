@@ -5,6 +5,7 @@ go 1.21
 require (
 	entgo.io/ent v0.12.5
 	github.com/mattn/go-sqlite3 v1.14.19
+	go.uber.org/dig v1.17.1
 )
 
 require (
