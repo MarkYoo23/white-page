@@ -1,7 +1,21 @@
 package main
 
-import "fmt"
+import "white-page/internal/Infrastructure"
 
 func main() {
-	fmt.Println("Hello, World!")
+	dbContext := Infrastructure.NewDbContext()
+	err := dbContext.Open()
+	if err != nil {
+		panic(err)
+	}
+
+	err = dbContext.GenerateSchema()
+	if err != nil {
+		panic(err)
+	}
+
+	err = dbContext.Close()
+	if err != nil {
+		panic(err)
+	}
 }
