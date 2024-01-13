@@ -85,6 +85,18 @@ func (r *EntryService) Delete(id int) error {
 	return nil
 }
 
+func (r *EntryService) DeleteAll() error {
+	client := r.dbContext.Client
+
+	_, err := client.Entry.Delete().Exec(context.Background())
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (r *EntryService) FindByPhone(tel string) (*ent.Entry, error) {
 	client := r.dbContext.Client
 

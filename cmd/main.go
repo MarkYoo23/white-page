@@ -18,6 +18,7 @@ func init() {
 	execMap["insert"] = exec.NewInsertExec()
 	execMap["delete"] = exec.NewDeleteExec()
 	execMap["export"] = exec.NewExportExec()
+	execMap["import"] = exec.NewImportExec()
 	execMap["map"] = exec.NewMapExec()
 }
 
@@ -60,5 +61,4 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-
 }

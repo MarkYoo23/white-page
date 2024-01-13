@@ -4,7 +4,6 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
-	"time"
 	"white-page/internal/di"
 	"white-page/internal/entries"
 )
@@ -29,7 +28,7 @@ func (*ExportExec) Execute([]string) error {
 	}
 
 	// CSV 파일 생성
-	file, err := os.Create(fmt.Sprintf(".bin/export_%d.csv", time.Now().Unix()))
+	file, err := os.Create(fmt.Sprintf(".bin/export.csv"))
 	if err != nil {
 		return fmt.Errorf("could not create CSV file: %v", err)
 	}
@@ -45,6 +44,8 @@ func (*ExportExec) Execute([]string) error {
 			return fmt.Errorf("could not write to CSV file: %v", err)
 		}
 	}
+
+	fmt.Println("export success")
 
 	return nil
 }
