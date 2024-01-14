@@ -8,6 +8,8 @@ import (
 
 // Entry holds the schema definition for the Entry entity.
 // 1. go run -mod=mod entgo.io/ent/cmd/ent new Entry
+// 1. go run -mod=mod entgo.io/ent/cmd/ent new User
+
 // 2. go generate ./ent
 
 type Entry struct {
