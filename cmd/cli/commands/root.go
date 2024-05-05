@@ -9,7 +9,7 @@ var (
 	cfgFile     string
 	userLicense string
 
-	rootCmd = &cobra.Command{
+	RootCmd = &cobra.Command{
 		Use:   "the-write-page-cli",
 		Short: "The write page applications",
 		Long:  ``,
@@ -17,7 +17,7 @@ var (
 )
 
 func Execute() error {
-	return rootCmd.Execute()
+	return RootCmd.Execute()
 }
 
 func init() {

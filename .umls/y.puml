@@ -1,0 +1,14 @@
+@startuml
+actor 사용자
+participant "CLI" as CLI
+participant "CSV Reader" as Reader
+
+사용자 -> CLI: CSV 파일 위치 입력
+CLI -> Reader : 파일 읽기 요청
+Reader -> CLI  : 데이터, 파일 타입 반환
+
+CLI -> CLI : 데이터를 구조체 리스트로 변환
+CLI -> CLI : 정렬
+
+CLI -> 사용자: 출력된 데이터
+@enduml

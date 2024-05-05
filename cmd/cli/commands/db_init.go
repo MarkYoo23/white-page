@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(dbInitCmd)
+	RootCmd.AddCommand(dbInitCmd)
 }
 
 var dbInitCmd = &cobra.Command{
